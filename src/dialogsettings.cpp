@@ -196,12 +196,20 @@ void DialogSettings::accept()
     settings->ignoreStartUnreadCount = ignoreStartupMailCountBox->isChecked();
     settings->onlyShowIconOnUnreadMessages = onlyShowIconOnNewMail->isChecked();
 
-    settings->setNotificationIcon(btnNotificationIcon->icon().pixmap( settings->mIconSize ));
+    // Force scale icon to the expected size
+    settings->setNotificationIcon(btnNotificationIcon->icon().pixmap( settings->mIconSize ).scaled(
+            settings->mIconSize.width(), settings->mIconSize.height(),
+            Qt::KeepAspectRatio, Qt::SmoothTransformation));
 
-    if ( boxNotificationIconUnread->isChecked() )
-        settings->mNotificationIconUnread = btnNotificationIconUnread->icon().pixmap( settings->mIconSize );
-    else
+    if ( boxNotificationIconUnread->isChecked() ) {
+        // Force scale icon to the expected size
+        settings->mNotificationIconUnread = btnNotificationIconUnread->icon().pixmap( settings->mIconSize ).scaled(
+                settings->mIconSize.width(), settings->mIconSize.height(),
+                Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+    } else {
         settings->mNotificationIconUnread = QPixmap();
+    }
 
     mModelNewEmails->applySettings();
     mAccountModel->applySettings();
